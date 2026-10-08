@@ -24,7 +24,7 @@ sg dialout -c "idf.py -p /dev/ttyACM0 flash" || { echo "❌ FW FLASH FAILED"; ex
 echo "=== [3/4] FLASH MODEL (¡verificar Hash of data verified!) ==="
 sg dialout -c "esptool.py --chip esp32s3 -p /dev/ttyACM0 --baud 921600 write_flash 0x190000 ../train/out/model_Q8.jny" || { echo "❌ MODEL FLASH FAILED"; exit 1; }
 
-echo "=== [4/4] SERIAL CAPTURE 25s (crash loop incluido) ==="
-sg dialout -c "timeout 25 cat /dev/ttyACM0" || true
+echo "=== [4/4] SERIAL CAPTURE 30s (idf.py monitor, se corta solo) ==="
+sg dialout -c "timeout 30 idf.py -p /dev/ttyACM0 monitor" || true
 
 echo "=== DONE — log completo en $LOG ==="
