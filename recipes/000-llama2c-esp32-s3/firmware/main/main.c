@@ -90,8 +90,8 @@ void app_main(void)
     }
 
     printf("[johnny] dim=%d layers=%d heads=%d vocab=%d seq=%d quant=%s\n",
-           s_model.hdr.dim, s_model.hdr.n_layers, s_model.hdr.n_heads,
-           s_model.hdr.vocab_size, s_model.hdr.seq_len,
+           (int)s_model.hdr.dim, (int)s_model.hdr.n_layers, (int)s_model.hdr.n_heads,
+           (int)s_model.hdr.vocab_size, (int)s_model.hdr.seq_len,
            s_model.hdr.quant == JNY_QUANT_Q8 ? "q8" : "fp32");
     printf("[johnny] prompt: \"%s\"\n", CONFIG_JOHNNY_PROMPT);
     printf("[johnny] generating %d tokens:\n", CONFIG_JOHNNY_MAX_NEW_TOKENS);
