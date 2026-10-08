@@ -23,6 +23,7 @@
 #endif
 
 static jny_model_t s_model;
+static float s_last_tps = 0.0f;
 
 #if OLED_ON
 static char s_roll[OLED_COLS + 1];
@@ -44,6 +45,7 @@ static void oled_push_char(char c)
 static void on_token(char c, float tps, void *user)
 {
     (void)user;
+    s_last_tps = tps;
     printf("%c", c);
     fflush(stdout);
 #if OLED_ON
@@ -108,8 +110,8 @@ void app_main(void)
                                CONFIG_JOHNNY_TEMPERATURE / 100.0f, on_token, NULL);
 
     printf("\n----------------------------------------------------------------\n");
-    printf("[johnny] generated %d tokens. total PSRAM blob: %d KB\n",
-           n, (int)(s_model.blob_size / 1024));
+    printf("[johnny] generated %d tokens at %.2f tok/s (EMA). blob: %d KB\n",
+           n, (double)s_last_tps, (int)(s_model.blob_size / 1024));
 #if OLED_ON
     oled_text(2, "done.");
     oled_flush();
