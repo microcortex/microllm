@@ -219,7 +219,8 @@ int jny_load_from_partition(const char *label, jny_model_t *m)
              "seq=%d quant=%u tokenizer=%u data_offset=%u",
              (int)m->hdr.dim, (int)m->hdr.hidden_dim, (int)m->hdr.n_layers,
              (int)m->hdr.n_heads, (int)m->hdr.n_kv_heads, (int)m->hdr.vocab_size,
-             (int)m->hdr.seq_len, m->hdr.quant, m->hdr.tokenizer_len, m->hdr.data_offset);
+             (int)m->hdr.seq_len, (unsigned)m->hdr.quant, (unsigned)m->hdr.tokenizer_len,
+             (unsigned)m->hdr.data_offset);
 
     esp_partition_read(part, sizeof(jny_header_t), m->tokenizer,
                        m->hdr.tokenizer_len < JNY_TOKENIZER_MAX ? m->hdr.tokenizer_len
