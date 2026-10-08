@@ -304,11 +304,10 @@ def main():
         use_amp = device == "cuda"
         model.train()
         ckpt_path = os.path.join(args.out, "model_ckpt.pt")
-        start_step = 0
-        if os.path.exists(ckpt_path):  # resume
+        start_step = int(os.environ.get("JOHNNY_RESUME_STEP", "0"))
+        if os.path.exists(ckpt_path) and start_step > 0:  # resume
             sd = torch.load(ckpt_path, weights_only=True)
             model.load_state_dict(sd)
-            start_step = int(input("[resume] checkpoint found — enter step to resume from (e.g. 1500): ") or 0)
             print(f"[resume] continuing from step {start_step}")
         for step in range(start_step + 1, args.steps + 1):
             x, y = get_batch(ids, args.batch_size, cfg.seq_len, device)
