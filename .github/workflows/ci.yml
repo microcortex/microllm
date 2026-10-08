@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint markdown & structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Markdown lint
+        run: npx --yes markdownlint-cli2 "**/*.md" "#node_modules"
+
+      - name: Recipe structure check
+        run: |
+          fail=0
+          for f in recipes/0*/README.md; do
+            [ -e "$f" ] || continue
+            for section in "Hardware" "Quickstart" "Results" "Reproduce"; do
+              grep -q "$section" "$f" || { echo "❌ $f missing section: $section"; fail=1; }
+            done
+          done
+          exit $fail

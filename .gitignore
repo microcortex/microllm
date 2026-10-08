@@ -1,0 +1,39 @@
+# Build artifacts
+build/
+out/
+dist/
+
+# Python
+__pycache__/
+.venv/
+*.egg-info/
+
+# Node
+node_modules/
+
+# ESP-IDF
+sdkconfig.old
+dependencies.lock
+managed_components/
+
+# Arduino / PlatformIO
+.pio/
+.vscode/.cmake-*
+
+# Zephyr
+zephyr/.cache/
+
+# FPGA toolchain
+*.bit
+*.asc
+*.json.gz
+!manifest.json
+
+# Models (large artifacts live in releases / HF, not git)
+*.gguf
+*.bin
+!models/**/*.bin.placeholder
+
+# OS
+.DS_Store
+Thumbs.db
