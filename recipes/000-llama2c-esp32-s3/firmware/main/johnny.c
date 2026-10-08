@@ -254,10 +254,11 @@ int jny_load_from_partition(const char *label, jny_model_t *m)
         }
     }
 
-    ESP_LOGI(TAG, "model '%s': dim=%d layers=%d heads=%d kv=%d vocab=%d seq=%d quant=%s "
-                  "(blob %d KB, kv %d KB)",
-             label, dim, m->hdr.n_layers, m->hdr.n_heads, m->hdr.n_kv_heads,
-             m->hdr.vocab_size, seq, m->hdr.quant == JNY_QUANT_Q8 ? "q8" : "fp32",
+    ESP_LOGI(TAG, "model '%s': dim=%" PRId32 " layers=%" PRId32 " heads=%" PRId32
+                  " kv=%" PRId32 " vocab=%" PRId32 " seq=%" PRId32 " quant=%s"
+                  " (blob %d KB, kv %d KB)",
+             label, h->dim, h->n_layers, h->n_heads, h->n_kv_heads,
+             h->vocab_size, seq, h->quant == JNY_QUANT_Q8 ? "q8" : "fp32",
              (int)(m->blob_size / 1024), (int)(kv_floats * 4 / 1024));
     return 0;
 }
