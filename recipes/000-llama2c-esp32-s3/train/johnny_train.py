@@ -231,6 +231,7 @@ def export_jny(path, cfg: Config, sd: dict, tokenizer: CharTokenizer, quant: int
 def load_corpus(path: str) -> str:
     if not os.path.exists(path):
         if os.path.basename(path) == "input.txt":
+            os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
             print(f"[data] downloading tiny shakespeare -> {path}")
             urllib.request.urlretrieve(SHAKESPEARE_URL, path)
         else:
