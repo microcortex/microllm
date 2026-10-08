@@ -248,24 +248,20 @@ def get_batch(ids, batch_size, seq_len, device):
 
 @torch.no_grad()
 def sample(model, tokenizer, prompt, max_new=128, temperature=0.8, device="cpu"):
+    """Autoregressive sampling WITHOUT KV cache (full recompute per token).
+
+    O(n²) but trivial at seq<=96 for training/eval; the firmware runtime in C
+    has its own KV-cached implementation (johnny.c) for on-device speed.
+    """
     cfg = model.cfg
-    cache = [
-        {
-            "k": torch.zeros(1, cfg.n_kv_heads, cfg.seq_len, cfg.head_dim),
-            "v": torch.zeros(1, cfg.n_kv_heads, cfg.seq_len, cfg.head_dim),
-            "pos": 0,
-        }
-        for _ in range(cfg.n_layers)
-    ]
     ids = tokenizer.encode(prompt)[-cfg.seq_len :]
     out = list(ids)
     was_training = model.training
     model.eval()
-    for i in range(max_new):
-        window = ids if i == 0 else ids[-1:]
-        logits = model(torch.tensor([window], device=device), cache=cache)
-        logits = logits[0, -1] / temperature
-        nxt = torch.multinomial(F.softmax(logits, dim=-1), 1).item()
+    for _ in range(max_new):
+        window = ids[-cfg.seq_len :]
+        logits = model(torch.tensor([window], device=device))
+        nxt = torch.multinomial(F.softmax(logits[0, -1] / temperature, dim=-1), 1).item()
         out.append(nxt)
         ids = (ids + [nxt])[-cfg.seq_len :]
     if was_training:
