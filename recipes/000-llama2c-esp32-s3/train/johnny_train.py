@@ -196,20 +196,23 @@ def build_tensor_list(cfg: Config, sd: dict):
 
 
 def pack_tensor(t: torch.Tensor, quant: int) -> bytes:
-    """Serialize one tensor: fp32; or [f32 scale][int8] when quant==Q8 and 2-D."""
+    """Serialize one tensor: fp32; or [f32 scale][int8] + pad4 when quant==Q8 and 2-D."""
     if t.dim() == 1 or quant == JNY_QUANT_FP32:
         return t.to(torch.float32).numpy().astype("<f4").tobytes()
     w = t.to(torch.float32)
     scale = w.abs().max().clamp(min=1e-8).item() / 127.0
     q = torch.round(w / scale).clamp(-127, 127).to(torch.int8)
-    return struct.pack("<f", scale) + q.numpy().tobytes()
+    raw = struct.pack("<f", scale) + q.numpy().tobytes()
+    pad = (-len(raw)) % 4  # keep every tensor 4-byte aligned (C walks with the same rule)
+    return raw + b"\x00" * pad
 
 
 def export_jny(path, cfg: Config, sd: dict, tokenizer: CharTokenizer, quant: int):
     tensors = build_tensor_list(cfg, sd)
     vocab_str = "".join(tokenizer.itos).encode("utf-8")
     body = b"".join(pack_tensor(t, quant) for _, t in tensors)
-    data_offset = 56 + len(vocab_str)
+    data_offset = (56 + len(vocab_str) + 3) & ~3  # align blob start to 4 bytes
+    body = b"\x00" * (data_offset - 56 - len(vocab_str)) + body
     header = struct.pack(
         "<IIi7iII2I",
         JNY_MAGIC, 1, quant,

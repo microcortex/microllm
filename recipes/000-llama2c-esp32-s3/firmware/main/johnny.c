@@ -94,24 +94,32 @@ static void dequant_row(float *out, const jny_tensor_t *t, int row)
 /* Layout                                                              */
 /* ------------------------------------------------------------------ */
 
+/* Byte size of one tensor inside the blob (must match train/johnny_train.py). */
+static size_t jny_tensor_bytes(int n_elems, uint32_t quant)
+{
+    if (quant == JNY_QUANT_FP32) return (size_t)n_elems * 4;
+    return 4 + (size_t)(((n_elems + 3) & ~3)); /* f32 scale + int8 data + pad to 4 */
+}
+
 static size_t jny_expected_blob_size(const jny_header_t *h)
 {
     const int dim = h->dim, hidden = h->hidden_dim;
     const int kv_dim = h->n_kv_heads * (dim / h->n_heads);
-    size_t total = (size_t)h->vocab_size * dim; /* tok_emb */
+    const uint32_t q = h->quant;
+    size_t total = jny_tensor_bytes((size_t)h->vocab_size * dim, q); /* tok_emb */
     for (int l = 0; l < h->n_layers; l++) {
-        total += dim;                                                        /* rms_attn */
-        total += (h->quant == JNY_QUANT_Q8 ? 4 : 0) + (size_t)dim * dim;     /* wq */
-        total += (h->quant == JNY_QUANT_Q8 ? 4 : 0) + (size_t)kv_dim * dim;  /* wk */
-        total += (h->quant == JNY_QUANT_Q8 ? 4 : 0) + (size_t)kv_dim * dim;  /* wv */
-        total += (h->quant == JNY_QUANT_Q8 ? 4 : 0) + (size_t)dim * dim;     /* wo */
-        total += dim;                                                        /* rms_ffn */
-        total += (h->quant == JNY_QUANT_Q8 ? 4 : 0) + (size_t)hidden * dim;  /* w1 */
-        total += (h->quant == JNY_QUANT_Q8 ? 4 : 0) + (size_t)dim * hidden;  /* w2 */
-        total += (h->quant == JNY_QUANT_Q8 ? 4 : 0) + (size_t)hidden * dim;  /* w3 */
+        total += 4 * dim;                                              /* rms_attn */
+        total += jny_tensor_bytes((size_t)dim * dim, q);               /* wq */
+        total += jny_tensor_bytes((size_t)kv_dim * dim, q);            /* wk */
+        total += jny_tensor_bytes((size_t)kv_dim * dim, q);            /* wv */
+        total += jny_tensor_bytes((size_t)dim * dim, q);               /* wo */
+        total += 4 * dim;                                              /* rms_ffn */
+        total += jny_tensor_bytes((size_t)hidden * dim, q);            /* w1 */
+        total += jny_tensor_bytes((size_t)dim * hidden, q);            /* w2 */
+        total += jny_tensor_bytes((size_t)hidden * dim, q);            /* w3 */
     }
-    total += dim;                                  /* rms_final */
-    total += (size_t)h->vocab_size * dim;          /* wcls */
+    total += 4 * dim;                                                  /* rms_final */
+    total += jny_tensor_bytes((size_t)h->vocab_size * dim, q);         /* wcls */
     return total;
 }
 
@@ -220,7 +228,11 @@ int jny_load_from_partition(const char *label, jny_model_t *m)
         ESP_LOGE(TAG, "PSRAM alloc failed for %d KB blob", (int)(m->blob_size / 1024));
         return JNY_ERR_MEM;
     }
-    esp_partition_read(part, m->hdr.data_offset, m->blob, m->blob_size);
+    esp_err_t rd = esp_partition_read(part, m->hdr.data_offset, m->blob, m->blob_size);
+    if (rd != ESP_OK) {
+        ESP_LOGE(TAG, "partition read failed: %d", (int)rd);
+        return JNY_ERR_PART;
+    }
 
     int rc = jny_parse_tensors(m);
     if (rc != 0) return rc;
