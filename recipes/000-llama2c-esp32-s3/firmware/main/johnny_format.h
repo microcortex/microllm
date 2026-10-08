@@ -1,8 +1,8 @@
 /*
  * johnny_format.h — MicroCortex model file format "johnny v1"
  *
- * A .jny file is a flat binary, little-endian, written by recipes/*/train
- * and consumed by the johnny runtime (firmware/main/johnny.c).
+ * A .jny file is a flat binary, little-endian, written by the train folder of
+ * each recipe and consumed by the johnny runtime (firmware/main/johnny.c).
  *
  * Layout:
  *   [header]    14 x u32/i32  (56 bytes)
