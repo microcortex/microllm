@@ -19,6 +19,8 @@ extern "C" {
 #define JNY_MAX_LAYERS 8
 #define JNY_N_PER_LAYER 9
 #define JNY_TOKENIZER_MAX 512
+/* tok_emb + 9 per layer + rms_final + wcls */
+#define JNY_TENSOR_COUNT(n_layers) (3 + 9 * (n_layers))
 #define JNY_ERR_MAGIC -1
 #define JNY_ERR_MEM -2
 #define JNY_ERR_PART -3
@@ -37,7 +39,7 @@ typedef struct {
     char tokenizer[JNY_TOKENIZER_MAX]; /* char-level vocab string */
     uint8_t *blob;                     /* PSRAM copy of the weights blob */
     size_t blob_size;
-    jny_tensor_t t[2 + 9 * JNY_MAX_LAYERS];
+    jny_tensor_t t[3 + 9 * JNY_MAX_LAYERS];
 
     float *rope_cos, *rope_sin;  /* [seq_len * head_dim/2] */
     float *kv;                   /* [n_layers][2][seq_len][kv_dim] */

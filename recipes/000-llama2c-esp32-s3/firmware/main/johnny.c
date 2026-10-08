@@ -174,9 +174,13 @@ static int jny_parse_tensors(jny_model_t *m)
             p += n;
             p = (const uint8_t *)(((uintptr_t)p + 3) & ~(uintptr_t)3); /* pad to 4 */
         }
+        if (t->data == NULL) {
+            ESP_LOGE(TAG, "tensor %d (%dx%d) got NULL data", i, t->rows, t->cols);
+            return JNY_ERR_MAGIC;
+        }
     }
-    if ((size_t)(p - m->blob) > m->blob_size) {
-        ESP_LOGE(TAG, "blob size mismatch: parsed %d > stored %d",
+    if ((size_t)(p - m->blob) != m->blob_size) {
+        ESP_LOGE(TAG, "blob size mismatch: walked %d, header math says %d",
                  (int)(p - m->blob), (int)m->blob_size);
         return JNY_ERR_MAGIC;
     }
