@@ -30,7 +30,7 @@ dataset → train → quantize → flash → benchmark. Every later recipe reuse
 
 ## Pipeline overview
 
-```
+```text
 tiny stories/bilingual text ──▶ train llama2.c-style (15M) ──▶ Q8_0 ──▶ XIP image ──▶ ESP32-S3 ──▶ tok/s on screen
 ```
 

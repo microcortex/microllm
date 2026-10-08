@@ -25,7 +25,7 @@
 
 ## Pipeline overview
 
-```
+```text
 dataset ──▶ train ──▶ quantize ──▶ convert ──▶ flash ──▶ measure
 ```
 

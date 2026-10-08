@@ -39,7 +39,7 @@ brain that does the thinking). "A cortex for your $5 chip."
 
 ## GitHub org profile
 
-```
+```text
 Tiny LLMs born for $5 chips. Recipes → benchmarks → models.
 Same prompt, real boards, published numbers.
 ```

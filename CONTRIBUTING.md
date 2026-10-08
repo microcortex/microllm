@@ -21,7 +21,7 @@ If your numbers can't be reproduced, they don't go on the wall.
 
 ## Recipe naming
 
-```
+```text
 recipes/NNN-short-name/<files>
 ```
 
