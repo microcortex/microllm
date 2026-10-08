@@ -47,7 +47,7 @@ class Config:
     n_heads: int = 6
     n_kv_heads: int = 6
     vocab_size: int = 256  # char-level (auto-set from corpus)
-    seq_len: int = 128
+    seq_len: int = 96  # RAM budget on ESP32-S3: blob 6.1MB + KV 1.33MB ≈ 7.6/8 MB
 
     @property
     def head_dim(self):
@@ -303,7 +303,14 @@ def main():
         sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.steps)
         use_amp = device == "cuda"
         model.train()
-        for step in range(1, args.steps + 1):
+        ckpt_path = os.path.join(args.out, "model_ckpt.pt")
+        start_step = 0
+        if os.path.exists(ckpt_path):  # resume
+            sd = torch.load(ckpt_path, weights_only=True)
+            model.load_state_dict(sd)
+            start_step = int(input("[resume] checkpoint found — enter step to resume from (e.g. 1500): ") or 0)
+            print(f"[resume] continuing from step {start_step}")
+        for step in range(start_step + 1, args.steps + 1):
             x, y = get_batch(ids, args.batch_size, cfg.seq_len, device)
             with torch.amp.autocast("cuda", dtype=torch.bfloat16, enabled=use_amp):
                 logits = model(x)
@@ -315,6 +322,8 @@ def main():
             sched.step()
             if step % 50 == 0 or step == 1:
                 print(f"[step {step:5d}] loss {loss.item():.4f} | lr {sched.get_last_lr()[0]:.2e}")
+            if step % 500 == 0 or step == args.steps:  # periodic ckpt: CPU training is long
+                torch.save(model.state_dict(), os.path.join(args.out, "model_ckpt.pt"))
             if step % args.eval_every == 0 or step == args.steps:
                 print("[sample]", repr(sample(model, tok, "JULIET:", 96, args.temperature, device)[:120]))
         torch.save(model.state_dict(), os.path.join(args.out, "model_ckpt.pt"))

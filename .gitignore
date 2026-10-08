@@ -38,3 +38,9 @@ zephyr/.cache/
 .DS_Store
 Thumbs.db
 .scratch/
+
+# recipe 000 artifacts
+recipes/000-llama2c-esp32-s3/train/out/
+recipes/000-llama2c-esp32-s3/train/.venv312/
+recipes/000-llama2c-esp32-s3/train/.scratch/
+*.jny
