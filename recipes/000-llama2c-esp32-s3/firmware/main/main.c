@@ -105,17 +105,20 @@ void app_main(void)
     s_roll_len = 0;
 #endif
 
-    const int n = jny_generate(&s_model, CONFIG_JOHNNY_PROMPT,
-                               CONFIG_JOHNNY_MAX_NEW_TOKENS,
-                               CONFIG_JOHNNY_TEMPERATURE / 100.0f, on_token, NULL);
-
-    printf("\n----------------------------------------------------------------\n");
-    printf("[johnny] generated %d tokens at %.2f tok/s (EMA). blob: %d KB\n",
-           n, (double)s_last_tps, (int)(s_model.blob_size / 1024));
+    /* continuous rounds: whoever opens the serial monitor (or resets the chip)
+     * always catches the next generation within a few seconds */
+    for (int round = 1;; round++) {
+        printf("\n=== round %d | prompt: \"%s\" ===\n", round, CONFIG_JOHNNY_PROMPT);
+        const int n = jny_generate(&s_model, CONFIG_JOHNNY_PROMPT,
+                                   CONFIG_JOHNNY_MAX_NEW_TOKENS,
+                                   CONFIG_JOHNNY_TEMPERATURE / 100.0f, on_token, NULL);
+        printf("\n[johnny] round %d done: %d tokens at %.2f tok/s (EMA). blob: %d KB\n",
+               round, n, (double)s_last_tps, (int)(s_model.blob_size / 1024));
+        fflush(stdout);
 #if OLED_ON
-    oled_text(2, "done.");
-    oled_flush();
+        oled_text(2, "done.");
+        oled_flush();
 #endif
-    jny_free(&s_model);
-    for (;;) vTaskDelay(portMAX_DELAY);
+        vTaskDelay(pdMS_TO_TICKS(5000));
+    }
 }
