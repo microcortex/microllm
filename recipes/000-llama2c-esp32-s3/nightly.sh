@@ -9,22 +9,19 @@ exec > >(tee -a "$LOG") 2>&1
 
 echo "=== MicroCortex nightly $(date) ==="
 
-echo "=== [0/4] Activando entorno ==="
+echo "=== [0/3] Activando entorno ==="
 export PATH="$HOME/esp/shadow:$PATH"
 . "$HOME/esp/esp-idf/export.sh" || { echo "❌ export.sh falló"; exit 1; }
 
 cd "$HOME/Documents/microllm/recipes/000-llama2c-esp32-s3/firmware" || exit 1
 
-echo "=== [1/4] BUILD ==="
+echo "=== [1/3] BUILD ==="
 idf.py build || { echo "❌ BUILD FAILED"; exit 1; }
 
-echo "=== [2/4] FLASH FIRMWARE ==="
-sg dialout -c "idf.py -p /dev/ttyACM0 flash" || { echo "❌ FW FLASH FAILED"; exit 1; }
-
-echo "=== [3/4] FLASH MODEL (¡verificar Hash of data verified!) ==="
+echo "=== [2/3] FLASH MODEL (el firmware va después, junto al monitor) ==="
 sg dialout -c "esptool.py --chip esp32s3 -p /dev/ttyACM0 --baud 921600 write_flash 0x190000 ../train/out/model_Q8.jny" || { echo "❌ MODEL FLASH FAILED"; exit 1; }
 
-echo "=== [4/4] SERIAL CAPTURE 30s (idf.py monitor, se corta solo) ==="
-sg dialout -c "timeout 30 idf.py -p /dev/ttyACM0 monitor" || true
+echo "=== [3/3] FLASH FIRMWARE + MONITOR ENCadenado (2 min; Ctrl+] corta antes si quieres) ==="
+sg dialout -c "timeout 120 idf.py -p /dev/ttyACM0 flash monitor" || true
 
 echo "=== DONE — log completo en $LOG ==="
