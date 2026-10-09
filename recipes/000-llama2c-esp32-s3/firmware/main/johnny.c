@@ -151,6 +151,7 @@ static int jny_parse_tensors(jny_model_t *m)
         set_shape(m, b + 6, hidden, dim);    /* w1 */
         set_shape(m, b + 7, dim, hidden);    /* w2 */
         set_shape(m, b + 8, hidden, dim);    /* w3 */
+        idx += 9;                            /* keep idx in sync with the b+.. indices */
     }
     set_shape(m, idx++, dim, 1);             /* rms_final (1-D, fp32) */
     set_shape(m, idx++, h->vocab_size, dim); /* wcls */
