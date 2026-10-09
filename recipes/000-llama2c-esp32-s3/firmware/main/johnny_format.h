@@ -39,7 +39,7 @@
  *               scale = max|w|/127 and data = round(w / scale) clamped to
  *               [-127, 127]. 1-D tensors (rmsnorm weights) stay fp32.
  *
- * 2026 — The MicroCortex Authors (MIT). Format inspired by llama2.c (MIT).
+ * 2026 — Emmanuel Vazquez (@Vazquezelectronics) — MicroCortex (MIT). Format inspired by llama2.c (MIT).
  */
 #pragma once
 

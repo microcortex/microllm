@@ -1,6 +1,6 @@
 /*
  * oled_ssd1306.h — minimal SSD1306 128x64 text display over I2C (ESP-IDF 5.x)
- * MIT — 2026 The MicroCortex Authors
+ * MIT — 2026 Emmanuel Vazquez (@Vazquezelectronics) — MicroCortex
  */
 #pragma once
 

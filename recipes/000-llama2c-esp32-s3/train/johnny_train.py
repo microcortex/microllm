@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 johnny_train.py — MicroCortex Recipe 000 trainer & exporter.
+Author: Emmanuel Vazquez (@Vazquezelectronics) — https://github.com/Vazquezelectronics
 
 Self-contained (no llama2.c dependency): char-level tokenizer, tiny Llama-style
 transformer, fp32/bf16 training, and export to the "johnny v1" format (.jny)

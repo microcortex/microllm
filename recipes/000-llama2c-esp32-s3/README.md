@@ -1,5 +1,7 @@
 # Recipe 000: A tiny Llama on the ESP32-S3, from scratch
 
+**Author:** [Emmanuel Vazquez](https://github.com/Vazquezelectronics) ([@Vazquezelectronics](https://github.com/Vazquezelectronics)) — founder & author of MicroCortex
+
 > **Status:** ✅ **VERIFIED WORKING — first run Oct 8, 2026** (ESP32-S3-CAM N16R8, 240MHz, Q8, naive C kernels)
 > **Task:** text generation (Shakespeare-style char-level model) running 100% offline on a $5 chip
 > **Final size:** ~6.0 MB Q8 blob + ~1.3 MB KV + scratch ≈ 7.4/8 MB PSRAM
@@ -154,4 +156,4 @@ any deviation found on hardware gets fixed here first.)*
 - Ronen Eldan & co. — TinyStories (proof that small models can be coherent)
 - Espressif — [esp-nn](https://github.com/espressif/esp-nn) (optimized kernels; integration planned)
 - Samsung Research — LittleBit (NeurIPS 2025) — the reason recipe 001 exists (see `docs/` analysis)
-- Built by **Emmanuel Vázquez** ([@Vazquezelectronics](https://github.com/Vazquezelectronics)) and the MicroCortex community
+- **Emmanuel Vazquez** ([@Vazquezelectronics](https://github.com/Vazquezelectronics)) — author of this recipe and the MicroCortex code, with the community

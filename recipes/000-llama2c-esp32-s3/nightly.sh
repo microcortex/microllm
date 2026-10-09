@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # MicroCortex — nightly flash + verify (un solo comando, todo el output a .scratch/nightly.log)
+# Author: Emmanuel Vazquez (@Vazquezelectronics) — https://github.com/Vazquezelectronics
 # Uso: bash ~/Documents/microllm/recipes/000-llama2c-esp32-s3/nightly.sh
 set -u
 LOG="$HOME/Documents/microllm/.scratch/nightly.log"

@@ -5,6 +5,8 @@
 **Tiny LLMs born for $5 chips.**
 Recipes, benchmarks and open models that fit where the cloud can't.
 
+**Author:** [Emmanuel Vazquez](https://github.com/Vazquezelectronics) ([@Vazquezelectronics](https://github.com/Vazquezelectronics)) — founder & author of MicroCortex
+
 > 🧠 *Cortex* = the layer of the brain that does the thinking. *Micro* = where it lives.
 
 [![CI](https://github.com/microcortex/microllm/actions/workflows/ci.yml/badge.svg)](https://github.com/microcortex/microllm/actions)

@@ -1,5 +1,6 @@
 /*
  * johnny.h — MicroCortex tiny-LLM runtime for ESP32-S3 (recipe 000)
+ * Author: Emmanuel Vazquez (@Vazquezelectronics) — https://github.com/Vazquezelectronics
  *
  * Loads a "johnny v1" .jny model (see johnny_format.h) from a flash partition,
  * keeps it in PSRAM, and generates text autoregressively with a KV cache.

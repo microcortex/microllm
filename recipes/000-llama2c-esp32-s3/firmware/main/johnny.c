@@ -1,7 +1,7 @@
 /*
  * johnny.c — MicroCortex tiny-LLM runtime for ESP32-S3 (recipe 000)
  *
- * MIT — 2026 The MicroCortex Authors. Inspired by llama2.c (Karpathy, MIT).
+ * MIT — 2026 Emmanuel Vazquez (@Vazquezelectronics) — MicroCortex. Inspired by llama2.c (Karpathy, MIT).
  *
  * v1 design notes:
  *  - The whole weights blob is copied from the flash partition into PSRAM

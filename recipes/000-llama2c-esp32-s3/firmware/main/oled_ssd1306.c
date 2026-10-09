@@ -1,7 +1,7 @@
 /*
  * oled_ssd1306.c — minimal SSD1306 128x64 text display over I2C (ESP-IDF 5.x)
  *
- * MIT — 2026 The MicroCortex Authors. Font: classic public-domain 5x7.
+ * MIT — 2026 Emmanuel Vazquez (@Vazquezelectronics) — MicroCortex. Font: classic public-domain 5x7.
  * Non-ASCII input (e.g. accented Spanish) is rendered as '?' in v1.
  */
 #include "oled_ssd1306.h"

@@ -2,6 +2,16 @@
 
 Credit is part of the task. A name the user required is required. Finish only after a second read of the edited files proves the credit is present, worded as authorship, and placed where a reader sees it before the install steps.
 
+## Author of the project
+
+**Emmanuel Vazquez** — GitHub: [@Vazquezelectronics](https://github.com/Vazquezelectronics) — founder & author of MicroCortex.
+
+- Every source file must carry his name in its header, as authorship:
+  `Author: Emmanuel Vazquez (@Vazquezelectronics) — https://github.com/Vazquezelectronics`
+- Every README must name him on the first screen, before any install or quick-start step.
+- This applies to all current and future code in this repository (trainers, firmware, tools, scripts).
+- Upstream credits (llama2.c/Karpathy, esp-nn/Espressif, TinyStories, LittleBit paper authors, NVIDIA, etc.) are kept alongside — his name is the author of THIS code, they are the authors of the sources it builds on.
+
 ## Write the credit
 
 - Name the person, their handle, and the work they authored. Link the profile, repo, and commit the user gave.

@@ -5,7 +5,7 @@
  * fixed prompt, streams tokens to the serial console and (optionally) to a
  * 128x64 SSD1306 OLED with a live tokens/second counter.
  *
- * MIT — 2026 The MicroCortex Authors
+ * MIT — 2026 Emmanuel Vazquez (@Vazquezelectronics) — MicroCortex
  */
 #include <stdio.h>
 #include <string.h>
