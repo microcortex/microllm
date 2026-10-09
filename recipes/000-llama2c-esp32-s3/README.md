@@ -1,9 +1,22 @@
 # Recipe 000: A tiny Llama on the ESP32-S3, from scratch
 
-> **Status:** 🚧 code complete, awaiting first hardware run
+> **Status:** ✅ **VERIFIED WORKING — first run Oct 8, 2026** (ESP32-S3-CAM N16R8, 240MHz, Q8, naive C kernels)
 > **Task:** text generation (Shakespeare-style char-level model) running 100% offline on a $5 chip
-> **Target boards:** ESP32-S3-DevKitC-1-N8R8 (8 MB flash, 8 MB octal PSRAM)
-> **Final size:** ~6.1 MB Q8 blob + ~100 KB runtime RAM
+> **Final size:** ~6.0 MB Q8 blob + ~1.3 MB KV + scratch ≈ 7.4/8 MB PSRAM
+
+## Verified results (first hardware run)
+
+| Metric | Value |
+|---|---|
+| Speed | **1.85 tok/s** sustained (EMA over 80-token rounds) |
+| Throughput context | 17 prompt tokens + 80 generated = 96 (seq_len) |
+| Model | 6.01M params, Q8 per-tensor → 6,024,684-byte blob, verified byte-identical on flash |
+| Sample output | `DUCHESS OF YORK:` / `KING HENRY VI:` + verse lines, coherent punctuation and structure |
+| Trained on | 32-core CPU (no GPU needed), 3,000 steps, ~40 min |
+
+**Honest notes:** 1.85 tok/s is memory-bound from PSRAM with naive C kernels — esp-nn/SIMD
+(recipe 000.5) and LittleBit 0.3 BPW (recipe 001) exist to multiply it. Text quality reflects
+3,000 training steps; resume training for better coherence.
 
 ## Why this recipe exists
 
@@ -122,11 +135,13 @@ idf.py -p /dev/ttyUSB0 flash monitor
 
 ## Results
 
-📌 *(pending first hardware run — will link `benchmarks/results/000-…` when done)*
+📌 **Verified Oct 8, 2026** — see the table at the top of this file: **1.85 tok/s** sustained,
+coherent Shakespeare-style output (character names, verse structure), 80 tokens per round on
+a 96-token context. Full log captured in the recipe issue linked from `benchmarks/`.
 
-**Honest expectations:** plain-C Q8 kernels on a 240 MHz LX7 ≈ **1–10 tok/s**
-(memory-bound from PSRAM); the Arena run will give exact numbers, then esp-nn/SIMD
-kernels and LittleBit 0.3-BPW (recipe 001) multiply that.
+**Next speedups (in order):** esp-nn SIMD dot products (~2-4×), quantized KV cache (frees
+PSRAM for longer contexts), LittleBit 0.3 BPW (recipe 001: same quality at ~5× less memory
+→ room for a much bigger model).
 
 ## Reproduce
 
