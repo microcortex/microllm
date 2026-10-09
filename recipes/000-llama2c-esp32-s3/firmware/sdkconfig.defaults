@@ -2,9 +2,10 @@
 # (DevKitC-1-N8R8 también funciona: cambiar a FLASHSIZE_8MB)
 CONFIG_IDF_TARGET="esp32s3"
 CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
-# console over the native USB-Serial-JTAG port (same one esptool uses) —
-# required for camera boards whose UART0 pins are not wired to USB
-CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+# console on BOTH ports: UART0 (GPIO43/44, may be wired to a bridge chip)
+# AND the native USB-Serial-JTAG — whichever the board wires, we're heard
+CONFIG_ESP_CONSOLE_UART_DEFAULT=y
+CONFIG_ESP_CONSOLE_SECONDARY_USB_SERIAL_JTG=y
 # power-friendly defaults (camera boards + thin USB cables brownout at 240MHz)
 CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_160=y
 CONFIG_ESPTOOLPY_FLASHFREQ_80M=y
