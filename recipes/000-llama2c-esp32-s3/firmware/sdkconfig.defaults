@@ -5,6 +5,9 @@ CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
 # console over the native USB-Serial-JTAG port (same one esptool uses) —
 # required for camera boards whose UART0 pins are not wired to USB
 CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+# power-friendly defaults (camera boards + thin USB cables brownout at 240MHz)
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_160=y
+CONFIG_ESPTOOLPY_FLASHFREQ_80M=y
 CONFIG_ESPTOOLPY_FLASHMODE_QIO=y
 CONFIG_ESPTOOLPY_FLASHFREQ_80M=y
 
