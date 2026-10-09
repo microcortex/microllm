@@ -23,7 +23,9 @@ idf.py build || { echo "❌ BUILD FAILED"; exit 1; }
 echo "=== [2/3] FLASH MODEL (el firmware va después, junto al monitor) ==="
 sg dialout -c "esptool.py --chip esp32s3 -p /dev/ttyACM0 --baud 921600 write_flash 0x190000 ../train/out/model_Q8.jny" || { echo "❌ MODEL FLASH FAILED"; exit 1; }
 
-echo "=== [3/3] FLASH FIRMWARE + MONITOR ENCadenado (2 min; Ctrl+] corta antes si quieres) ==="
-sg dialout -c "timeout 120 idf.py -p /dev/ttyACM0 flash monitor" || true
+echo "=== [3/3] FLASH FIRMWARE (ACM0) + MONITOR (USB0 — el console de esta placa) ==="
+sg dialout -c "timeout 120 idf.py -p /dev/ttyACM0 flash" || { echo "❌ FW FLASH FAILED"; exit 1; }
+echo "=== monitor USB0 (Ctrl+] corta) ==="
+sg dialout -c "timeout 100 idf.py -p /dev/ttyUSB0 monitor" || true
 
 echo "=== DONE — log completo en $LOG ==="
