@@ -346,7 +346,7 @@ static void jny_forward(jny_model_t *m, int token)
             float *yh = m->tmp + hh * m->head_dim;
             memset(yh, 0, m->head_dim * sizeof(float));
             for (int t = 0; t <= m->pos; t++) {
-                const float w = m->att[t];
+                const float w = m->att[t] / sum; /* softmax normalization! */
                 const float *vt = V + (size_t)t * m->kv_dim + g * m->head_dim;
                 for (int d = 0; d < m->head_dim; d++) yh[d] += w * vt[d];
             }
