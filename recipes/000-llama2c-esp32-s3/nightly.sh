@@ -15,7 +15,9 @@ export PATH="$HOME/esp/shadow:$PATH"
 
 cd "$HOME/Documents/microllm/recipes/000-llama2c-esp32-s3/firmware" || exit 1
 
-echo "=== [1/3] BUILD ==="
+echo "=== [1/3] BUILD (borra sdkconfig para re-aplicar defaults) ==="
+rm -f sdkconfig sdkconfig.old
+idf.py set-target esp32s3 >/dev/null 2>&1 || true
 idf.py build || { echo "❌ BUILD FAILED"; exit 1; }
 
 echo "=== [2/3] FLASH MODEL (el firmware va después, junto al monitor) ==="
